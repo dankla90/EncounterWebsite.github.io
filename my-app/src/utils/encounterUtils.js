@@ -21,7 +21,9 @@ export const rndSelectMonster = (xp, monsterType) => {
     if (monsterType !== 'all') {
         validMonsters = validMonsters.filter(m => m.type === monsterType);
     }
-
+    if (validMonsters.length === 0) {
+        throw new Error('No valid monsters found for the given XP budget.');
+    }
     //const nearestMonster = validMonsters.reduce((prev, curr) => (Math.abs(curr.xp - xp) < Math.abs(prev.xp - xp) ? curr : prev));
     //return nearestMonster;
     const randomIndex = Math.floor(Math.random() * validMonsters.length);
@@ -46,6 +48,6 @@ export const buildEncounterSize = (partySize, monsterXp, xp) => {
     if (numMonsters === 1) {
         return numMonsters;
     }
-    const result = numMonsters * encounterMultiplier[index];
+    const result = numMonsters;
     return Math.floor(result);
 };

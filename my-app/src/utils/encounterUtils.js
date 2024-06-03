@@ -7,10 +7,11 @@ export const getXpBudget = (partySize, partyLevel, difficulty) => {
     return encounterTables.xp_difficulties[difficulty][partyLevel - 1] * partySize;
 };
 
-export const rndSelectMonster = (xp, monsterType) => {
-    //let validMonsters = Object.values(monstersDict).filter(m => m.xp <= xp);
-
+export const rndSelectMonster = (xp, monsterTypes) => {
     let validMonsters = [];
+
+    // Filter monsters by XP thresholds, The number is how many possible enemies are in an encounter
+    // the max is very unlikely, so keep the number a bit higher than what you want the max to be
     for (const monster of Object.values(monstersDict)) {
         const xpThreshold = xp / 15;
         if (monster.xp >= xpThreshold && monster.xp <= xp) {
@@ -18,17 +19,33 @@ export const rndSelectMonster = (xp, monsterType) => {
         }
     }
 
-    if (monsterType !== 'all') {
-        validMonsters = validMonsters.filter(m => m.type === monsterType);
+    // If a specific type or types are selected, filter by those types
+    if (monsterTypes !== 'all') {
+        validMonsters = validMonsters.filter(m => monsterTypes.includes(m.type));
+
+        // Fallback logic: expand the XP threshold if no valid monsters are found
+        // A better solution is to increase the number of monsters in the database
+        if (validMonsters.length === 0) {
+            for (const monster of Object.values(monstersDict)) {
+                const xpThreshold = xp / 30;
+                if (monster.xp >= xpThreshold && monster.xp <= xp) {
+                    validMonsters.push(monster);
+                }
+            }
+            validMonsters = validMonsters.filter(m => monsterTypes.includes(m.type));
+        }
     }
+
+    // Throw an error if no valid monsters are found
     if (validMonsters.length === 0) {
         throw new Error('No valid monsters found for the given XP budget.');
     }
-    //const nearestMonster = validMonsters.reduce((prev, curr) => (Math.abs(curr.xp - xp) < Math.abs(prev.xp - xp) ? curr : prev));
-    //return nearestMonster;
+
+    // Select a random valid monster
     const randomIndex = Math.floor(Math.random() * validMonsters.length);
     return validMonsters[randomIndex];
 };
+
 
 
 export const buildEncounterSize = (partySize, monsterXp, xp) => {

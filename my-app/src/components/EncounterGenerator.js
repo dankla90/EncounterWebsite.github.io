@@ -45,6 +45,13 @@ const EncounterGenerator = () => {
         setEncounters(newEncounters);
     };
 
+    // this checks if the enter key is pressed, for running the generator.
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleGenerateEncounter();
+        }
+    };
+
     return (
         <div className="App">
             <div className="header">
@@ -115,7 +122,12 @@ const EncounterGenerator = () => {
                 <div>
                     <label>
                         Number of Encounters:
-                        <input type="number" value={numberOfEncounters} min={1} onChange={e => setNumberOfEncounters(Number(e.target.value))} />
+                        <input
+                        type="number"
+                        value={numberOfEncounters}
+                        onChange={e => setNumberOfEncounters(Number(e.target.value))}
+                        onKeyDown={handleKeyPress}
+                    />
                     </label>
                 </div>
                 <button onClick={handleGenerateEncounter}>Generate Encounter</button>

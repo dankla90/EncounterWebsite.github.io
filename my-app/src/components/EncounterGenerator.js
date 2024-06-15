@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { encounterTables, attitude, needWant, needWantMonster, complication, attitudeMonster } from '../data/encounterData';
 import { getXpBudget, rndSelectMonster, buildEncounterSize } from '../utils/encounterUtils';
 
-
 const EncounterGenerator = () => {
     const [partySize, setPartySize] = useState(4);
     const [partyLevel, setPartyLevel] = useState(3);
@@ -45,7 +44,6 @@ const EncounterGenerator = () => {
         setEncounters(newEncounters);
     };
 
-    // this checks if the enter key is pressed, for running the generator.
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
             handleGenerateEncounter();
@@ -54,91 +52,90 @@ const EncounterGenerator = () => {
 
     return (
         <div className="App">
-            <div className="header">
-                <h1>Encounter Generator</h1>
-                <div>
-                    <label>
-                        Party Size:
-                        <input type="number" value={partySize} min={1} max={20} onChange={e => setPartySize(Number(e.target.value))} />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Party Level:
-                        <input type="number" value={partyLevel} min={1} max={20}  onChange={e => setPartyLevel(Number(e.target.value))} />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Difficulty:
-                        <select value={difficulty} onChange={e => setDifficulty(e.target.value)}>
-                            <option value="easy">Easy</option>
-                            <option value="medium">Medium</option>
-                            <option value="hard">Hard</option>
-                            <option value="deadly">Deadly</option>
-                        </select>
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Monster Type:
-                        <div>
-                        {encounterTables.monsterTypesList.map(type => (
-                            <label key={type}>
-                                <input
-                                    type="checkbox"
-                                    checked={monsterType.includes(type)}
-                                    onChange={e => {
-                                        const isChecked = e.target.checked;
-                                        let newTypes;
-
-                                        if (type === 'all') {
-                                            // If "All" checkbox is checked, deselect all other checkboxes
-                                            newTypes = isChecked ? ['all'] : [];
-                                        } else {
-                                            if (isChecked) {
-                                                // Add the selected type to the list
-                                                newTypes = monsterType.includes('all') ? [type] : [...monsterType, type];
-                                            } else {
-                                                // Remove the selected type from the list
-                                                newTypes = monsterType.filter(t => t !== type);
-                                            }
-                                            // If "All" checkbox is selected and any other checkbox is clicked, deselect "All"
-                                            if (monsterType.includes('all') && type !== 'all') {
-                                                newTypes = newTypes.filter(t => t !== 'all');
-                                            }
-                                        }
-
-                                        setMonsterType(newTypes);
-                                    }}
-                                />
-                                {type}
-                            </label>
-                        ))}
-
-                        </div>
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Number of Encounters:
-                        <input
-                        type="number"
-                        value={numberOfEncounters}
-                        onChange={e => setNumberOfEncounters(Number(e.target.value))}
-                        onKeyDown={handleKeyPress}
-                    />
-                    </label>
-                </div>
-                <button onClick={handleGenerateEncounter}>Generate Encounter</button>
-            </div>
-            <div className="encounters">
-                {encounters.map((encounter, index) => (
-                    <div key={index} className="encounter">
-                        <h2>Encounter {index + 1}:</h2>
-                        <p>{encounter}</p>
+            <div className="content">
+                <div className="header">
+                    <h1>Encounter Generator</h1>
+                    <div>
+                        <label>
+                            Party Size:
+                            <input type="number" value={partySize} min={1} max={20} onChange={e => setPartySize(Number(e.target.value))} />
+                        </label>
                     </div>
-                ))}
+                    <div>
+                        <label>
+                            Party Level:
+                            <input type="number" value={partyLevel} min={1} max={20} onChange={e => setPartyLevel(Number(e.target.value))} />
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Difficulty:
+                            <select value={difficulty} onChange={e => setDifficulty(e.target.value)}>
+                                <option value="easy">Easy</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
+                                <option value="deadly">Deadly</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Monster Type:
+                            <div>
+                                {encounterTables.monsterTypesList.map(type => (
+                                    <label key={type}>
+                                        <input
+                                            type="checkbox"
+                                            id='monsterType'
+                                            checked={monsterType.includes(type)}
+                                            onChange={e => {
+                                                const isChecked = e.target.checked;
+                                                let newTypes;
+
+                                                if (type === 'all') {
+                                                    newTypes = isChecked ? ['all'] : [];
+                                                } else {
+                                                    if (isChecked) {
+                                                        newTypes = monsterType.includes('all') ? [type] : [...monsterType, type];
+                                                    } else {
+                                                        newTypes = monsterType.filter(t => t !== type);
+                                                    }
+                                                    if (monsterType.includes('all') && type !== 'all') {
+                                                        newTypes = newTypes.filter(t => t !== 'all');
+                                                    }
+                                                }
+
+                                                setMonsterType(newTypes);
+                                            }}
+                                        />
+                                        {type}
+                                    </label>
+                                ))}
+                            </div>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Number of Encounters:
+                            <input
+                                type="number"
+                                value={numberOfEncounters}
+                                onChange={e => setNumberOfEncounters(Number(e.target.value))}
+                                onKeyDown={handleKeyPress}
+                            />
+                        </label>
+                    </div>
+                    <button onClick={handleGenerateEncounter}>Generate Encounter</button>
+                    <button onClick={() => setEncounters([])}>Clear Encounters</button>
+                </div>
+                <div className="encounters">
+                    {encounters.map((encounter, index) => (
+                        <div key={index} className="encounter">
+                            <h2>Encounter {index + 1}:</h2>
+                            <p>{encounter}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

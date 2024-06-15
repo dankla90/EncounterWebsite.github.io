@@ -1,68 +1,101 @@
+/* Updated styles.css */
 .App {
   text-align: left;
   background-color: #839ed3;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  padding: 10px;
   min-height: 100vh;
-  justify-content: center;
+}
+
+.EncounterGenerator {
+  flex: 1;
+  width: 50%;
+}
+
+.checkbox{
+  color: #090a0a;
+  flex-direction: row;
+}
+
+.ThreeDSceene {
+  flex: 1;
+}
+
+.content {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
 }
 
 .header {
-  background-color: #3c60a7;
+  background-color: #282c34;
   padding: 20px;
-  width: 100%;
   color: white;
+  width: 100%;
+  max-width: 800px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+}
+
+.header h1 {
+  grid-column: span 2;
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+.header label {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  font-size: 16px;
 }
 
-
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  border: none;
+.header input, .header select {
+  margin-top: 5px;
+  padding: 5px;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  color: #ffffff;
+}
+
+.header button {
+  grid-column: span 2;
+  padding: 10px;
+  border: none;
+  background-color: #61dafb;
+  color: #282c34;
   font-size: 16px;
   cursor: pointer;
+  border-radius: 4px;
 }
 
-button:hover {
-  background-color: #0056b3;
+.header button:hover {
+  background-color: #21a1f1;
 }
 
 .encounters {
   width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  margin-top: 20px;
+  max-width: 800px;
 }
 
 .encounter {
-  margin-bottom: 20px;
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .encounter h2 {
-  font-size: 20px;
-  color: #007bff;
+  margin: 0 0 10px;
 }
 
-.encounter p {
-  background-color: #f9f9f9;
-  padding: 10px;
-  border: 1px solid #dddddd;
-  border-radius: 4px;
-}
 
-/* This is for tablets and mediun screens */
-@media screen and (min-width: 900px){
-  
-}
-
-/* This is for big screens */
-@media screen  and (min-width: 1400px){
-  
+@media only screen and (max-width: 600px)  {
+  .ThreeDSceene{
+    display: none;
+  }
 }

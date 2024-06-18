@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { encounterTables, attitude, needWant, needWantMonster, complication, attitudeMonster } from '../data/encounterData';
 import { getXpBudget, rndSelectMonster, buildEncounterSize } from '../utils/encounterUtils';
 
+
 const EncounterGenerator = () => {
     const [partySize, setPartySize] = useState(4);
     const [partyLevel, setPartyLevel] = useState(3);

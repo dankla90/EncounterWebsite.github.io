@@ -4,8 +4,11 @@ import { OrbitControls, useGLTF, useAnimations } from '@react-three/drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 const Hero = () => {
-  
-  const gltf = useLoader(GLTFLoader, './Spartan_idle.gltf');
+
+
+  const urlSpartan = 'http://localhost:3000' + process.env.PUBLIC_URL + '/Spartan_idle.gltf'
+  console.log(urlSpartan)
+  const gltf = useLoader(GLTFLoader, urlSpartan);
   return (
     <>
       <primitive object={gltf.scene} scale={0.4} />
@@ -20,7 +23,7 @@ const ThreeDScene = () => {
     <OrbitControls />
       <mesh>
         <Suspense fallback={null}>
-          <ambientLight intensity={0.5} />
+        <ambientLight intensity={0.5} />
           <directionalLight color="red" position={[1, 1, 1]} />
           <Hero />
         </Suspense>

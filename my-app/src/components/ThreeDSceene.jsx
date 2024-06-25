@@ -11,7 +11,7 @@ const Hero = () => {
   const gltf = useLoader(GLTFLoader, urlSpartan);
   return (
     <>
-      <primitive object={gltf.scene} scale={0.4} />
+      <primitive object={gltf.scene} scale={0.9} />
     </>
   );
 };
@@ -24,7 +24,7 @@ const ThreeDScene = () => {
       <mesh>
         <Suspense fallback={null}>
         <ambientLight intensity={0.5} />
-          <directionalLight color="red" position={[1, 1, 1]} />
+          <directionalLight color="red" position={[10, 5, 1]} />
           <Hero />
         </Suspense>
       </mesh>

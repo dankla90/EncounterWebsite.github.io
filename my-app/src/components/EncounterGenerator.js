@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { encounterTables, attitude, needWant, needWantMonster, complication, attitudeMonster } from '../data/encounterData';
 import { getXpBudget, rndSelectMonster, buildEncounterSize } from '../utils/encounterUtils';
 
-
-const EncounterGenerator = () => {
+const EncounterGenerator = ({ onGenerate }) => {
     const [partySize, setPartySize] = useState(4);
     const [partyLevel, setPartyLevel] = useState(3);
     const [difficulty, setDifficulty] = useState('medium');
@@ -13,6 +12,9 @@ const EncounterGenerator = () => {
 
     const handleGenerateEncounter = () => {
         const newEncounters = [];
+        const monsters = [];
+        let totalFighters = 0;
+
         const encounterXp = getXpBudget(partySize, partyLevel, difficulty);
         const selectedMonsterTypes = monsterType.length === 1 && monsterType[0] === 'all' ? 'all' : monsterType;
 
@@ -21,6 +23,11 @@ const EncounterGenerator = () => {
             const monsterCount = buildEncounterSize(partySize, monster.xp, encounterXp);
             const monsterXp = monster.xp * monsterCount;
             const partyMemberXp = Math.floor(monsterXp / partySize);
+
+            totalFighters += monsterCount;
+
+            // Add to monster data array
+            monsters.push({ type: monster.name.toLowerCase(), count: monsterCount });
 
             let complicationText = complication[Math.floor(Math.random() * complication.length)];
 
@@ -34,6 +41,11 @@ const EncounterGenerator = () => {
                 newEncounterText += `(The ${newMonster.name} can be found in ${newMonster.manpage}, the individual monster XP is ${newMonster.xp}, and the total XP is ${newMonsterXp}. Each party member should get ${newPartyMemberXp} XP for this encounter.) `;
 
                 complicationText = newEncounterText;
+
+                // Add to monster data array
+                monsters.push({ type: newMonster.name.toLowerCase(), count: newMonsterCount });
+
+                totalFighters += newMonsterCount;
             }
 
             let encounterText = `There are ${monsterCount} ${monster.name} that are ${attitude[Math.floor(Math.random() * attitude.length)]}, they seek ${needWant[Math.floor(Math.random() * needWant.length)]}, but they are ${complicationText}. `;
@@ -43,6 +55,9 @@ const EncounterGenerator = () => {
         }
 
         setEncounters(newEncounters);
+
+        // Pass the data to the parent component
+        onGenerate(totalFighters, monsters);
     };
 
     const handleKeyPress = (e) => {
@@ -79,7 +94,7 @@ const EncounterGenerator = () => {
                             </select>
                         </label>
                     </div>
-                    <div>
+                    <div className="checkbox" id="monsterTypeContainer"> 
                         <label>
                             Monster Type:
                             <div>

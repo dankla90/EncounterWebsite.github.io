@@ -4,22 +4,20 @@ import { OrbitControls, useGLTF, useAnimations } from '@react-three/drei';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 const Hero = () => {
-
-
   const urlSpartan = 'http://localhost:3000' + process.env.PUBLIC_URL + '/Spartan_idle.gltf'
   console.log(urlSpartan)
   const gltf = useLoader(GLTFLoader, urlSpartan);
   return (
-    <>
+    <React.Fragment>
       <primitive object={gltf.scene} scale={0.9} />
-    </>
+    </React.Fragment>
   );
 };
 
 
 const ThreeDScene = () => {
   return (
-    <>
+    <React.Fragment>
     <OrbitControls />
       <mesh>
         <Suspense fallback={null}>
@@ -28,7 +26,7 @@ const ThreeDScene = () => {
           <Hero />
         </Suspense>
       </mesh>
-    </>
+    </React.Fragment>
   );
 };
 

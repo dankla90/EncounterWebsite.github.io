@@ -74,19 +74,19 @@ const EncounterGenerator = ({ onGenerate }) => {
                     <div>
                         <label>
                             Party Size:
-                            <input type="number" value={partySize} min={1} max={20} onChange={e => setPartySize(Number(e.target.value))} />
+                            <input type="number" id="PartySize" value={partySize} min={1} max={20} onChange={e => setPartySize(Number(e.target.value))} />
                         </label>
                     </div>
                     <div>
                         <label>
                             Party Level:
-                            <input type="number" value={partyLevel} min={1} max={20} onChange={e => setPartyLevel(Number(e.target.value))} />
+                            <input type="number" id="partyLevel" value={partyLevel} min={1} max={20} onChange={e => setPartyLevel(Number(e.target.value))} />
                         </label>
                     </div>
                     <div>
                         <label>
                             Difficulty:
-                            <select value={difficulty} onChange={e => setDifficulty(e.target.value)}>
+                            <select value={difficulty} id="Difficulty   " onChange={e => setDifficulty(e.target.value)}>
                                 <option value="easy">Easy</option>
                                 <option value="medium">Medium</option>
                                 <option value="hard">Hard</option>
@@ -135,6 +135,7 @@ const EncounterGenerator = ({ onGenerate }) => {
                             Number of Encounters:
                             <input
                                 type="number"
+                                id="NumOfEncounters"
                                 value={numberOfEncounters}
                                 onChange={e => setNumberOfEncounters(Number(e.target.value))}
                                 onKeyDown={handleKeyPress}

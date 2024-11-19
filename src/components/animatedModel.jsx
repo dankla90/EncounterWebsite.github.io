@@ -2,6 +2,8 @@ import React, { useRef } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
+
+
 const AnimatedModel = ({ type, position, scale }) => {
     // Define the model URLs
     const modelUrls = {
@@ -12,6 +14,21 @@ const AnimatedModel = ({ type, position, scale }) => {
         ogre: 'http://localhost:3000' + process.env.PUBLIC_URL + '/Spartan_idle.gltf',
         dragon: 'http://localhost:3000' + process.env.PUBLIC_URL + '/Spartan_idle.gltf'
     };
+
+    
+    const loader = new GLTFLoader();
+
+    loader.load(
+    '/path/to/model.gltf',
+    (gltf) => {
+        // Model is now loaded, and you can safely add it to the scene
+        scene.add(gltf.scene);
+    },
+    undefined,
+    (error) => {
+        console.error('An error occurred while loading the model:', error);
+    }
+    );
 
     // Ensure a URL is always available for the provided type
     const url = modelUrls[type];

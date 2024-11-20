@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { encounterTables, attitude, needWant, needWantMonster, complication, attitudeMonster } from '../data/encounterData';
 import { getXpBudget, rndSelectMonster, buildEncounterSize } from '../utils/encounterUtils';
 
-const EncounterGenerator = ({ onGenerate }) => {
+const EncounterGenerator = () => {
     const [partySize, setPartySize] = useState(4);
     const [partyLevel, setPartyLevel] = useState(3);
     const [difficulty, setDifficulty] = useState('medium');
@@ -55,9 +55,6 @@ const EncounterGenerator = ({ onGenerate }) => {
         }
 
         setEncounters(newEncounters);
-
-        // Pass the data to the parent component
-        onGenerate(totalFighters, monsters);
     };
 
     const handleKeyPress = (e) => {

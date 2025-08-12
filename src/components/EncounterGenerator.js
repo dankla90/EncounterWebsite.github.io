@@ -311,7 +311,7 @@ export default function EncounterGenerator() {
           need: null,
         };
 
-        if (compChoice === 'monster') {
+        if (compChoice === 'Monster') {
           const compMonster = rndSelectMonster(encounterXp, selectedMonsterTypes, partySize);
           const cCount = compMonster.count ?? 1;
           const cXpEach = compMonster.xp ?? 0;
@@ -321,7 +321,7 @@ export default function EncounterGenerator() {
           const need2 = needWantMonster[Math.floor(Math.random() * needWantMonster.length)];
 
           comp = {
-            type: 'monster',
+            type: 'Monster',
             name: compMonster.name,
             count: cCount,
             xpEach: cXpEach,

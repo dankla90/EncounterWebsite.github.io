@@ -11,12 +11,13 @@ export const encounterTables = {
 
 
 export const attitude = ["friendly", "cautious", "indifferent", "hostile", "threatening"];
-export const needWant = ["Food", "Mate", "Shiny things", "Slaves", "Territory", "A home", "Religious sacrifice", "status/trophies", "kicks/fun"];
-export const complication = ["Secretive", "Monster", "Monster", "Monster", "Monster", "Wounded", "Insane", "Controlled", "Supernatural", 
-                "Trapped", "Frenzied", "with children", "Pregnant", "with prisoner", "with treasure", "Diseased", "Running", 
-                "Hiding", "Lost"];
-export const attitudeMonster = ["hostile", "threatening", "attacking", "angry"]
-export const needWantMonster = ["Food", "Shiny things", "Slaves", "Territory", "Religious sacrifice", "status/trophies"];
+export const needWant = ["food", "mate", "shiny things", "slaves", "territory", "a home", "religious sacrifice", "status/trophies", "kicks/fun"];
+export const complication = ["secretive", "monster", "monster", "monster", "monster", "wounded", "insane", "controlled", "supernatural", 
+                "trapped", "frenzied", "with children", "pregnant", "with prisoner", "with treasure", "diseased", "running", 
+                "hiding", "lost"];
+export const attitudeMonster = ["hostile", "threatening", "attacking", "angry"];
+export const needWantMonster = ["food", "shiny things", "slaves", "territory", "religious sacrifice", "status/trophies"];
+
 
 
 

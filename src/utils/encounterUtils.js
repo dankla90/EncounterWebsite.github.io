@@ -1,70 +1,73 @@
 import { encounterTables, monstersDict } from '../data/encounterData';
 
+// Gets the XP budget based on party size, level, and difficulty
 export const getXpBudget = (partySize, partyLevel, difficulty) => {
-    if (partyLevel > 20 || partyLevel < 1 || partySize < 1) {
-        throw new Error('Party level should be between 1 and 20, while party size should be 1 or greater.');
-    }
-    return encounterTables.xp_difficulties[difficulty][partyLevel - 1] * partySize;
+  if (partyLevel > 20 || partyLevel < 1 || partySize < 1) {
+    throw new Error(
+      'Party level should be between 1 and 20, while party size should be 1 or greater.'
+    );
+  }
+  return encounterTables.xp_difficulties[difficulty][partyLevel - 1] * partySize;
 };
 
-export const rndSelectMonster = (xp, monsterTypes) => {
+// Determines XP multiplier based on monster count and party size
+const getMultiplier = (monsterCount, partySize) => {
+  let adjustedCount = monsterCount;
+  if (partySize < 3) adjustedCount += 1;
+  if (partySize >= 6) adjustedCount -= 1;
+
+  if (adjustedCount === 1) return 1;
+  if (adjustedCount === 2) return 1.5;
+  if (adjustedCount <= 6) return 2;
+  if (adjustedCount <= 10) return 2.5;
+  if (adjustedCount <= 14) return 3;
+  return 4;
+};
+
+// Best monster count within budget (max 20)
+export const buildEncounterSize = (partySize, monsterXp, xpBudget) => {
+  let bestCount = 0;
+  for (let count = 1; count <= 20; count++) {
+    if (count * monsterXp * getMultiplier(count, partySize) <= xpBudget) {
+      bestCount = count;
+    } else break;
+  }
+  return bestCount;
+};
+const baseStatsUrl = 'https://5e.tools/bestiary.html#';
+
+export const rndSelectMonster = (xpBudget, monsterTypes, partySize) => {
     let validMonsters = [];
 
-    // Filter monsters by XP thresholds, The number is how many possible enemies are in an encounter
-    // the max is very unlikely, so keep the number a bit higher than what you want the max to be
     for (const monster of Object.values(monstersDict)) {
-        const xpThreshold = xp / 15;
-        if (monster.xp >= xpThreshold && monster.xp <= xp) {
-            validMonsters.push(monster);
+        if (monsterTypes !== 'all' && !monsterTypes.includes(monster.type)) {
+            continue; // Skip monsters not in selected types
         }
-    }
+        const count = buildEncounterSize(partySize, monster.xp, xpBudget);
+        if (count >= 1) {
+            const multiplier = getMultiplier(count, partySize);
+            const adjustedXP = count * monster.xp * multiplier;
+            if (adjustedXP >= 0.8 * xpBudget && adjustedXP <= xpBudget) {
+                // Generate URL-safe monster name for 5e.tools
+                const monsterUrlName = monster.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                const statsUrl = `${baseStatsUrl}${monsterUrlName}_mm`;
 
-    // If a specific type or types are selected, filter by those types
-    if (monsterTypes !== 'all') {
-        validMonsters = validMonsters.filter(m => monsterTypes.includes(m.type));
-
-        // Fallback logic: expand the XP threshold if no valid monsters are found
-        // A better solution is to increase the number of monsters in the database
-        if (validMonsters.length === 0) {
-            for (const monster of Object.values(monstersDict)) {
-                const xpThreshold = xp / 30;
-                if (monster.xp >= xpThreshold && monster.xp <= xp) {
-                    validMonsters.push(monster);
-                }
+                validMonsters.push({
+                    ...monster,
+                    count,
+                    adjustedXP,
+                    rawXP: count * monster.xp,
+                    xpPerPlayer: Math.floor(adjustedXP / partySize),
+                    statsUrl, 
+                });
             }
-            validMonsters = validMonsters.filter(m => monsterTypes.includes(m.type));
         }
     }
 
-    // Throw an error if no valid monsters are found
     if (validMonsters.length === 0) {
         throw new Error('No valid monsters found for the given XP budget.');
     }
 
-    // Select a random valid monster
     const randomIndex = Math.floor(Math.random() * validMonsters.length);
     return validMonsters[randomIndex];
-};
-
-
-
-export const buildEncounterSize = (partySize, monsterXp, xp) => {
-    const monsterCount = [1, 2, 6, 10, 14];
-    const encounterMultiplier = [1.0, 0.67, 0.50, 0.40, 0.33, 0.25];
-    const numMonsters = Math.floor(xp / monsterXp);
-    // Find appropriate index or default to last multiplier if not found
-    let index = monsterCount.findIndex(count => numMonsters <= count);
-    if (index === -1) {
-        index = encounterMultiplier.length - 1;
-    }
-    // Adjust index for small parties
-    if (partySize <= 2 && index !== encounterMultiplier.length - 1) {
-        index += 1;
-    }
-    // Ensure numMonsters is 1 or more before applying multiplier
-    if (numMonsters === 1) {
-        return numMonsters;
-    }
-    const result = numMonsters;
-    return Math.floor(result);
 };

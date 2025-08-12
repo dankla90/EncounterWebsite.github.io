@@ -1,6 +1,6 @@
-import type { RemuxerResult } from './remuxer';
-import type { HlsChunkPerformanceTiming } from './loader';
 import type { SourceBufferName } from './buffer';
+import type { HlsChunkPerformanceTiming } from './loader';
+import type { RemuxerResult } from './remuxer';
 
 export interface TransmuxerResult {
   remuxResult: RemuxerResult;
@@ -30,7 +30,7 @@ export class ChunkMetadata {
     id: number,
     size = 0,
     part = -1,
-    partial = false
+    partial = false,
   ) {
     this.level = level;
     this.sn = sn;

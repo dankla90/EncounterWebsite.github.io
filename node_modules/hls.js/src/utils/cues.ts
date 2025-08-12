@@ -1,7 +1,7 @@
-import { fixLineBreaks } from './vttparser';
-import type { CaptionScreen, Row } from './cea-608-parser';
-import { generateCueId } from './webvtt-parser';
 import { addCueToTrack } from './texttrack-utils';
+import { fixLineBreaks } from './vttparser';
+import { generateCueId } from './webvtt-parser';
+import type { CaptionScreen, Row } from './cea-608-parser';
 
 const WHITESPACE_CHAR = /\s/;
 
@@ -10,7 +10,7 @@ export interface CuesInterface {
     track: TextTrack | null,
     startTime: number,
     endTime: number,
-    captionScreen: CaptionScreen
+    captionScreen: CaptionScreen,
   ): VTTCue[];
 }
 
@@ -19,7 +19,7 @@ const Cues: CuesInterface = {
     track: TextTrack | null,
     startTime: number,
     endTime: number,
-    captionScreen: CaptionScreen
+    captionScreen: CaptionScreen,
   ): VTTCue[] {
     const result: VTTCue[] = [];
     let row: Row;
@@ -63,7 +63,7 @@ const Cues: CuesInterface = {
         const id = generateCueId(startTime, endTime, cueText);
 
         // If this cue already exists in the track do not push it
-        if (!track || !track.cues || !track.cues.getCueById(id)) {
+        if (!track?.cues?.getCueById(id)) {
           cue = new Cue(startTime, endTime, cueText);
           cue.id = id;
           cue.line = r + 1;

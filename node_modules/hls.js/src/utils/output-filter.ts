@@ -1,5 +1,5 @@
-import type { TimelineController } from '../controller/timeline-controller';
 import type { CaptionScreen } from './cea-608-parser';
+import type { TimelineController } from '../controller/timeline-controller';
 
 export default class OutputFilter {
   private timelineController: TimelineController;
@@ -24,7 +24,7 @@ export default class OutputFilter {
       this.startTime,
       this.endTime as number,
       this.screen as CaptionScreen,
-      this.cueRanges
+      this.cueRanges,
     );
     this.startTime = null;
   }

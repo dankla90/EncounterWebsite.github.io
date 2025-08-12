@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "version": "0.1.0",
-  "homepage": "https://dankla90.github.io/EncounterWebsite.github.io/",
+  "homepage": "https://dndencounter.no",
   "private": true,
   "dependencies": {
     "@picocss/pico": "^2.0.6",

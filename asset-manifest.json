@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.js": "/EncounterWebsite.github.io/static/js/main.3a2bfccd.js",
+    "main.js": "/EncounterWebsite.github.io/static/js/main.843621bb.js",
     "static/js/453.96453769.chunk.js": "/EncounterWebsite.github.io/static/js/453.96453769.chunk.js",
     "index.html": "/EncounterWebsite.github.io/index.html",
-    "main.3a2bfccd.js.map": "/EncounterWebsite.github.io/static/js/main.3a2bfccd.js.map",
+    "main.843621bb.js.map": "/EncounterWebsite.github.io/static/js/main.843621bb.js.map",
     "453.96453769.chunk.js.map": "/EncounterWebsite.github.io/static/js/453.96453769.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.3a2bfccd.js"
+    "static/js/main.843621bb.js"
   ]
 }

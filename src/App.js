@@ -181,12 +181,14 @@ const ArenaApp = () => {
       <GlobalStyle />
       <AppContainer>
         <Header>
-          <ShimmerText>Enhanced Encounter Generator</ShimmerText>
+          <ShimmerText as="h1">D&D 5e Encounter Generator</ShimmerText>
           {infoVisible && (
             <InfoBox>
               <CloseButton onClick={() => setInfoVisible(false)} aria-label="Hide info">
                 &times;
               </CloseButton>
+
+              <h2>About This Encounter Generator</h2>
               Hi, this is a personal project I made for DMing DnD, I wanted to make encounters easier but also for 
               them to have narrative value that I could use as inspiration, let me know if you have any problems, 
               my email is in the footer.<br />
@@ -212,7 +214,7 @@ const ArenaApp = () => {
         </Main>
 
         <Footer>
-          © 2025 Daniel Klausen |{' '}
+          © 2025 Daniel Klausen | Free D&D 5e Encounter Generator |{' '}
           <a href="mailto:danielklausen90@gmail.com">danielklausen90@gmail.com</a>
         </Footer>
       </AppContainer>

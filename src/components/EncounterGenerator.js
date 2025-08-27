@@ -363,7 +363,7 @@ export default function EncounterGenerator() {
   return (
     <Container>
       <HeaderRow>
-        <Title>Encounter Generator</Title>
+        <Title as="h2">D&D 5e Encounter Generator</Title>
 
         <div>
           <Label>
@@ -479,7 +479,10 @@ export default function EncounterGenerator() {
         </div>
 
         <ButtonGroup>
-          <button onClick={handleGenerateEncounter}>Generate Encounter</button>
+          <button onClick={handleGenerateEncounter} aria-label="Generate a random D&D 5e encounter">
+            Generate Encounter
+          </button>
+
           <button
             onClick={() => {
               setEncounters([]);

@@ -4,13 +4,23 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import {
   encounterTables,
+  monstersDict,
   attitude,
   needWant,
-  needWantMonster,
+  needWantByType,
   complication as complications,
+  complicationExclusions,
   attitudeMonster,
+  attitudeExpansions,
 } from '../data/encounterData';
 import { getXpBudget, rndSelectMonster } from '../utils/encounterUtils';
+
+// Pre-compute monster counts per type from the dict (updates automatically when dict changes)
+const typeCounts = {};
+for (const m of Object.values(monstersDict)) {
+  typeCounts[m.type] = (typeCounts[m.type] ?? 0) + 1;
+}
+const totalMonsters = Object.values(monstersDict).length;
 
 // ---------- STYLED COMPONENTS ----------
 
@@ -254,7 +264,8 @@ export default function EncounterGenerator() {
   const [encounters, setEncounters] = useState([]);
   const [expandedSet, setExpandedSet] = useState(new Set());
 
-  const getSearchUrl = (monsterName) => {
+  const getSearchUrl = (monsterName, slug) => {
+    if (slug) return `https://open5e.com/monsters/${slug}`;
     const encodedName = encodeURIComponent(monsterName.toLowerCase());
     return `https://5e.tools/search.html?q=${encodedName}`;
   };
@@ -289,7 +300,9 @@ export default function EncounterGenerator() {
 
     let desc = `There are ${monster.count} ${pluralize(monster.name, monster.count)}`;
     if (secondary) desc += ` and ${secondary.count} ${pluralize(secondary.name, secondary.count)}`;
-    desc += ` that are ${enc.attitude}, they seek ${enc.need}`;
+    desc += ` that are ${enc.attitude}`;
+    if (enc.attitudeExpansion) desc += ` — ${enc.attitudeExpansion}`;
+    desc += `. They seek ${enc.need}`;
     if (comp.type === 'Monster') {
       desc += `. Nearby, ${comp.count} ${pluralize(comp.name, comp.count)} are also present — ${comp.attitude} and seeking ${comp.need}. They may engage anyone in range.`;
     } else {
@@ -310,20 +323,20 @@ export default function EncounterGenerator() {
 
     lines.push(`**${monster.count} × ${monster.name}**  `);
     lines.push(`${xpLine(monster.xpEach, monster.count, partySize)}  `);
-    lines.push(`[Stats](${getSearchUrl(monster.name)})`);
+    lines.push(`[Stats](${getSearchUrl(monster.name, monster.slug)})`);
     lines.push('');
 
     if (secondary) {
       lines.push(`**${secondary.count} × ${secondary.name}**  `);
       lines.push(`${xpLine(secondary.xpEach, secondary.count, partySize)}  `);
-      lines.push(`[Stats](${getSearchUrl(secondary.name)})`);
+      lines.push(`[Stats](${getSearchUrl(secondary.name, secondary.slug)})`);
       lines.push('');
     }
 
     if (comp.type === 'Monster') {
       lines.push(`**${comp.count} × ${comp.name}** *(nearby threat)*  `);
       lines.push(`${xpLine(comp.xpEach, comp.count, partySize)}  `);
-      lines.push(`[Stats](${getSearchUrl(comp.name)})`);
+      lines.push(`[Stats](${getSearchUrl(comp.name, comp.slug)})`);
       lines.push('');
     }
 
@@ -387,9 +400,15 @@ export default function EncounterGenerator() {
         const mAdjustedXp = monster.adjustedXP ?? mTotalXp;
 
         const attitude1 = attitude[Math.floor(Math.random() * attitude.length)];
-        const need1 = needWant[Math.floor(Math.random() * needWant.length)];
+        const expansionList = attitudeExpansions[attitude1] ?? [];
+        const attitudeExpansion = expansionList[Math.floor(Math.random() * expansionList.length)] ?? '';
 
-        const compChoice = complications[Math.floor(Math.random() * complications.length)];
+        const needPool1 = needWantByType[monster.type] ?? needWant;
+        const need1 = needPool1[Math.floor(Math.random() * needPool1.length)];
+
+        const excluded = complicationExclusions[monster.type] ?? [];
+        const availableComplications = complications.filter((c) => !excluded.includes(c));
+        const compChoice = availableComplications[Math.floor(Math.random() * availableComplications.length)];
         let comp = {
           type: compChoice,
           description: compChoice,
@@ -409,11 +428,13 @@ export default function EncounterGenerator() {
           const cTotalXp = cXpEach * cCount;
           const cAdjustedXp = compMonster.adjustedXP ?? cTotalXp;
           const attitude2 = attitudeMonster[Math.floor(Math.random() * attitudeMonster.length)];
-          const need2 = needWantMonster[Math.floor(Math.random() * needWantMonster.length)];
+          const needPool2 = needWantByType[compMonster.type] ?? needWant;
+          const need2 = needPool2[Math.floor(Math.random() * needPool2.length)];
 
           comp = {
             type: 'Monster',
             name: compMonster.name,
+            slug: compMonster.slug ?? null,
             count: cCount,
             xpEach: cXpEach,
             totalXp: cTotalXp,
@@ -427,6 +448,7 @@ export default function EncounterGenerator() {
           xpBudget: encounterXp,
           monster: {
             name: monster.name,
+            slug: monster.slug ?? null,
             count: mCount,
             xpEach: mXpEach,
             totalXp: mTotalXp,
@@ -434,12 +456,14 @@ export default function EncounterGenerator() {
           },
           secondary: secondary ? {
             name: secondary.name,
+            slug: secondary.slug ?? null,
             count: secondary.count,
             xpEach: secondary.xp,
             totalXp: secondary.xp * secondary.count,
             adjustedXp: secondary.adjustedXP,
           } : null,
           attitude: attitude1,
+          attitudeExpansion,
           need: need1,
           complication: comp,
         };
@@ -554,11 +578,24 @@ export default function EncounterGenerator() {
                     }}
 
                   />
-                  <span style={{ fontSize: 13 }}>{type}</span>
+                  <span style={{ fontSize: 13 }}>
+                    {type === 'all'
+                      ? `all (${totalMonsters})`
+                      : `${type} (${typeCounts[type] ?? 0})`}
+                  </span>
                 </CheckboxLabel>
               ))}
             </CheckboxList>
           </Label>
+          <div style={{ fontSize: 12, color: '#888', marginTop: 6, paddingLeft: 2 }}>
+            Pool:{' '}
+            <strong style={{ color: '#555' }}>
+              {monsterType.includes('all')
+                ? totalMonsters
+                : monsterType.reduce((sum, t) => sum + (typeCounts[t] ?? 0), 0)}
+            </strong>{' '}
+            monsters
+          </div>
         </CheckboxGroup>
 
         <div>
@@ -629,7 +666,9 @@ export default function EncounterGenerator() {
                 <EncounterDescription>
                   There are {monster.count} {pluralize(monster.name, monster.count)}
                   {secondary && ` and ${secondary.count} ${pluralize(secondary.name, secondary.count)}`}
-                  {' '}that are {enc.attitude}, they seek {enc.need}
+                  {' '}that are {enc.attitude}
+                  {enc.attitudeExpansion && ` — ${enc.attitudeExpansion}`}
+                  {'. '}They seek {enc.need}
                   {comp.type === 'Monster'
                     ? `. Nearby, ${comp.count} ${pluralize(comp.name, comp.count)} are also present — ${comp.attitude} and seeking ${comp.need}. They may engage anyone in range.`
                     : `, but they are ${comp.description}.`}
@@ -663,7 +702,7 @@ export default function EncounterGenerator() {
                     <MonsterName>{monster.count} × {monster.name}</MonsterName>
                     <MonsterXP>{xpLine(monster.xpEach, monster.count, partySize)}</MonsterXP>
                     <AdjustedXP>
-                      <a href={getSearchUrl(monster.name)} target="_blank" rel="noopener noreferrer">Stats</a>
+                      <a href={getSearchUrl(monster.name, monster.slug)} target="_blank" rel="noopener noreferrer">Stats</a>
                     </AdjustedXP>
                   </MonsterBox>
 
@@ -672,7 +711,7 @@ export default function EncounterGenerator() {
                       <MonsterName>{secondary.count} × {secondary.name}</MonsterName>
                       <MonsterXP>{xpLine(secondary.xpEach, secondary.count, partySize)}</MonsterXP>
                       <AdjustedXP>
-                        <a href={getSearchUrl(secondary.name)} target="_blank" rel="noopener noreferrer">Stats</a>
+                        <a href={getSearchUrl(secondary.name, secondary.slug)} target="_blank" rel="noopener noreferrer">Stats</a>
                       </AdjustedXP>
                     </MonsterBox>
                   )}
@@ -682,7 +721,7 @@ export default function EncounterGenerator() {
                       <MonsterName>{comp.count} × {comp.name}</MonsterName>
                       <MonsterXP>{xpLine(comp.xpEach, comp.count, partySize)}</MonsterXP>
                       <AdjustedXP>
-                        <a href={getSearchUrl(comp.name)} target="_blank" rel="noopener noreferrer">Stats</a>
+                        <a href={getSearchUrl(comp.name, comp.slug)} target="_blank" rel="noopener noreferrer">Stats</a>
                       </AdjustedXP>
                     </MonsterBox>
                   )}

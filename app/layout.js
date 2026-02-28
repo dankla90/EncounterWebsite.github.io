@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import StyledComponentsRegistry from './lib/registry';
 import './globals.css';
 
@@ -118,6 +119,12 @@ export default function RootLayout({ children }) {
         <StyledComponentsRegistry>
           {children}
         </StyledComponentsRegistry>
+        <Script
+          async
+          src="https://umami-dusky-five.vercel.app/script.js"
+          data-website-id="114f41e4-39fa-4aac-8265-8bb5e6fd48a5"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

@@ -247,8 +247,27 @@ const ArenaApp = () => {
 
               <InfoSection>
                 <InfoSectionTitle>Monster Stats</InfoSectionTitle>
-                The Stats link searches 5e.tools. If a monster does not appear there, try
-                searching by name on D&D Beyond or Google.
+                The Stats link searches Open5e, which covers both official D&D monsters and
+                third-party content. If a monster does not appear there, try searching by
+                name on D&D Beyond or Google.
+              </InfoSection>
+
+              <InfoDivider />
+
+              <InfoSection>
+                <InfoSectionTitle>Built With AI Assistance</InfoSectionTitle>
+                The original site was built with npm and React. The migration to pnpm and Next.js,
+                as well as ongoing development of the encounter logic, narrative generation, and
+                site improvements, was done with the help of{' '}
+                <a
+                  href="https://claude.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#7eb8d4', fontWeight: 600 }}
+                >
+                  Claude
+                </a>{' '}
+                (Anthropic). All design decisions and content are my own.
               </InfoSection>
 
               <InfoDivider />

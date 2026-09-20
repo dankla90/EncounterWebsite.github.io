@@ -285,7 +285,7 @@ const ArenaApp = () => {
 
         <Footer>
           © {new Date().getFullYear()} Daniel Klausen | Free D&D 5e Encounter Generator |{' '}
-          <a href="mailto:danielklausen90@gmail.com">danielklausen90@gmail.com</a>
+          <a href="mailto:kontakt@danielklausen.no">kontakt@danielklausen.no</a>
         </Footer>
       </AppContainer>
     </>
